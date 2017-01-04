@@ -32,10 +32,15 @@ int main(int argc, char* argv[]) {
     
 	else {
         
+        /* Create a vector of strings to store words of desired length */
         vector<string> wordList;
         std::string word = "";
 
-        
+        /** While there are still words to be read in from the input file,
+         *  Check if the next word has a length that matches the desired length
+         *  inputted by the user. If so, add it to the vector. Else, continue
+         *  reading from the input file.
+         */
         while (getline(in, word)) {
             if(word.length() == wordLength){
                 wordList.push_back(word);
@@ -43,27 +48,30 @@ int main(int argc, char* argv[]) {
         }
 	}
 	
+	/* Randomly select a word from the list of viable words */
 	srand(time(NULL));
 	int randomInt = rand() % (wordList.size() - 1);
 	
+	/** Create an empty word of the correct length for the user to see their 
+	 *  guessing progress.
+	 */
 	string wordToGuess = wordList.at(randomInt);
 	vector<char> currWord;
 	for(int i = 0; i < wordLength - 1; i++){
 	    currWord.push_back('_');
 	}
 	
-	
-	
+	/* While the game is not over, have the user guess a char or a word */
 	char prompt = '';
 	bool gameOver = false;
     while (!gameOver) {
         
+        /* Print the current status of the word to be guessed */
         for(auto i = currWord.begin(); i != currWord.end(); i++){
             std::cout << *i;
         }
         
-        
-    
+        /* Prompt the user for input */
         cout << "Enter your guess" << endl;
         getline(cin, name);
         
