@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unordered_set>
+#include <sstream>
 
 using namespace std;
 
@@ -19,16 +20,22 @@ int main(int argc, char* argv[]){
     }
     
     /* Convert the command line argument to the correct int value */
-    int wordLength = *argv[1] - 48;
-    
-    if(wordLength > 18 || wordLength < 1){
-    	cerr << "Please enter a word length between 1 and 18 (inclusive)" 
+    istringstream iss(argv[2]);
+    unsigned int wordLength;
+    if(iss >> wordLength){}
+    else{
+    	cerr << "Error reading in word length" << endl;
+    	return -1;
+    }
+
+    if(wordLength > 16 || wordLength < 1){
+    	cerr << "Please enter a word length between 1 and 16 (inclusive)" 
     			<< endl;
     	return -1;
     }
     
     ifstream in;
-    in.open(argv[2]);
+    in.open(argv[1]);
 
     /* Check if input file was actually opened */
     if(!in.is_open()) 
@@ -54,22 +61,24 @@ int main(int argc, char* argv[]){
     
     /* Randomly select a word from the list of viable words */
 	srand(time(NULL));
-	int randomInt = rand() % (wordList.size() - 1);
+	int randomInt = rand() % (wordList.size());
 	
 	/** Create an empty word of the correct length for the user to see their 
 	 *  guessing progress.
 	 */
 	string wordToGuess = wordList.at(randomInt);
 	
-	cout << wordToGuess << endl;
-	
+	/* Fill the current word with '_' */
 	string currWord = "";
-	for(int i = 0; i < wordLength; i++){
+	for(unsigned int i = 0; i < wordLength; i++){
 	    currWord.append("_");
 	}
+	
+	/* Create a vector for wrong letters and a set for guessed letters */
  	vector<string> wrongLetters;
  	unordered_set<string> guessedLetters;
 	
+	/* Prepare the game for the user */
 	string userGuess = "";
 	int chancesRemaining = 5;
 	cout << "\nYour word is " << wordLength << " letters long" << endl;
@@ -103,7 +112,7 @@ int main(int argc, char* argv[]){
 	         */
 	        else{
 	            guessedLetters.insert(userGuess);
-	            for(int i = 0; i < wordLength; i++){
+	            for(unsigned int i = 0; i < wordLength; i++){
 	                if(userGuess == string(1,wordToGuess.at(i))){
 	                    currWord.at(i) = wordToGuess.at(i);
 	                    flag = true;
